@@ -1,0 +1,101 @@
+---
+import Base from '../layouts/Base.astro';
+import Calculator from '../components/Calculator.astro';
+import Icon from '../components/Icon.astro';
+import { faq, formula, site } from '../content/site';
+---
+<Base>
+  <header class="topbar" id="topbar">
+    <div class="wrap">
+      <a class="wordmark" href="/" aria-label={`${site.name} home`}>
+        <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true">
+          <rect width="64" height="64" rx="16" fill="currentColor"></rect>
+          <rect x="14" y="38" width="8" height="12" rx="2" fill="var(--s-principal)"></rect>
+          <rect x="28" y="28" width="8" height="22" rx="2" fill="var(--s-principal)"></rect>
+          <rect x="42" y="16" width="8" height="34" rx="2" fill="var(--s-interest)"></rect>
+        </svg>
+        {site.name}
+      </a>
+      <div class="topbar-actions">
+        <button type="button" class="btn btn-ghost" id="btn-saved" aria-haspopup="dialog">
+          <Icon name="history" />
+          <span class="hide-xs">Saved</span>
+          <span class="badge" id="saved-count">0</span>
+        </button>
+        <button type="button" class="btn btn-ghost btn-icon" id="btn-theme" aria-label="Switch to dark theme">
+          <Icon name="moon" class="i-moon" />
+          <Icon name="sun" class="i-sun" />
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <span class="eyebrow">{site.hero.eyebrow}</span>
+      <h1>{site.hero.title}</h1>
+      <p>{site.hero.lede}</p>
+    </section>
+
+    <Calculator />
+
+    <section class="section explainer" aria-labelledby="formula-title">
+      <div class="section-head"><h2 id="formula-title">{formula.title}</h2></div>
+      <div class="explain">
+        {
+          formula.items.map((f) => (
+            <article class="card">
+              <h3>{f.term}</h3>
+              <code>{f.math}</code>
+              <p>{f.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section faq-section" aria-labelledby="faq-title">
+      <div class="section-head"><h2 id="faq-title">Questions</h2></div>
+      <div class="faq">
+        {
+          faq.map((item) => (
+            <details>
+              <summary>
+                {item.q}
+                <Icon name="chevron" class="chev" />
+              </summary>
+              <p>{item.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>{site.footer.note}</p>
+      <p>© {new Date().getFullYear()} {site.name}. Runs entirely in your browser — no account, no tracking.</p>
+    </div>
+  </footer>
+</Base>
+
+<style is:global>
+  #btn-theme .i-sun {
+    display: none;
+  }
+  :root[data-theme='dark'] #btn-theme .i-sun {
+    display: block;
+  }
+  :root[data-theme='dark'] #btn-theme .i-moon {
+    display: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) #btn-theme .i-sun {
+      display: block;
+    }
+    :root:not([data-theme='light']) #btn-theme .i-moon {
+      display: none;
+    }
+  }
+</style>

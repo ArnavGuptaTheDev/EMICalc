@@ -1,0 +1,308 @@
+---
+import Icon from './Icon.astro';
+import { presets, sliders } from '../content/site';
+---
+<section class="calc" aria-label="EMI calculator">
+  <form class="card form" id="loan-form" novalidate autocomplete="off">
+    <div class="presets" role="group" aria-label="Presets">
+      {presets.map((p, i) => <button type="button" class="chip" data-preset={i}>{p.label}</button>)}
+    </div>
+
+    <div class="field">
+      <div class="field-row">
+        <label for="f-principal">Loan amount</label>
+        <div class="input input-w">
+          <span class="affix" aria-hidden="true">₹</span>
+          <input id="f-principal" name="principal" inputmode="numeric" aria-describedby="w-principal e-principal" />
+        </div>
+      </div>
+      <input
+        type="range"
+        class="range"
+        id="r-principal"
+        min="0"
+        max="1000"
+        step="1"
+        aria-label="Loan amount slider"
+        data-min={sliders.principal.min}
+        data-max={sliders.principal.max}
+      />
+      <div class="range-scale" aria-hidden="true"><span>₹10K</span><span>₹1 Cr</span></div>
+      <span class="hint" id="w-principal"></span>
+      <span class="error" id="e-principal" data-error-for="principal"></span>
+    </div>
+
+    <div class="field">
+      <div class="field-row">
+        <label for="f-rate">Interest rate <span class="hint">(p.a.)</span></label>
+        <div class="input input-sm">
+          <input id="f-rate" name="annualRate" inputmode="decimal" aria-describedby="e-rate" />
+          <span class="affix" aria-hidden="true">%</span>
+        </div>
+      </div>
+      <input
+        type="range"
+        class="range"
+        id="r-rate"
+        min={sliders.annualRate.min}
+        max={sliders.annualRate.max}
+        step={sliders.annualRate.step}
+        aria-label="Interest rate slider"
+      />
+      <div class="range-scale" aria-hidden="true"><span>{sliders.annualRate.min}%</span><span>{sliders.annualRate.max}%</span></div>
+      <span class="error" id="e-rate" data-error-for="annualRate"></span>
+    </div>
+
+    <div class="field">
+      <div class="field-row">
+        <span class="label" id="l-tenure">Tenure</span>
+        <div class="seg" role="group" aria-label="Tenure unit">
+          <button type="button" data-unit="months" aria-pressed="true">Months</button>
+          <button type="button" data-unit="years" aria-pressed="false">Years</button>
+        </div>
+      </div>
+      <div class="field-row">
+        <span class="hint" id="w-tenure"></span>
+        <div class="input input-sm">
+          <input id="f-tenure" name="tenure" inputmode="decimal" aria-labelledby="l-tenure" aria-describedby="w-tenure e-tenure" />
+          <span class="affix" id="tenure-affix" aria-hidden="true">mo</span>
+        </div>
+      </div>
+      <input type="range" class="range" id="r-tenure" min={sliders.tenureMonths.min} max={sliders.tenureMonths.max} step="1" aria-label="Tenure slider" />
+      <div class="range-scale" aria-hidden="true"><span id="tenure-min">1 mo</span><span id="tenure-max">30 yrs</span></div>
+      <span class="error" id="e-tenure" data-error-for="tenureMonths"></span>
+    </div>
+
+    <div class="field">
+      <div class="field-row">
+        <label for="f-start">Start / purchase date</label>
+        <div class="input input-w">
+          <input id="f-start" name="startDate" type="date" aria-describedby="e-start" />
+        </div>
+      </div>
+      <span class="error" id="e-start" data-error-for="startDate"></span>
+    </div>
+
+    <details class="group" id="g-card">
+      <summary>
+        <span>Card charges &amp; fees</span>
+        <span class="sum-meta" id="m-card"></span>
+        <Icon name="chevron" class="chev" />
+      </summary>
+      <div class="group-body">
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="f-gst" name="applyGst" />
+            <span class="track" aria-hidden="true"></span>
+            GST on interest
+          </label>
+          <div class="subfield" id="sub-gst">
+            <label for="f-gstrate" class="hint">GST rate</label>
+            <div class="input input-sm">
+              <input id="f-gstrate" name="gstRate" inputmode="decimal" />
+              <span class="affix" aria-hidden="true">%</span>
+            </div>
+            <span class="error" data-error-for="gstRate"></span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="f-shift" name="shiftToStatement" />
+            <span class="track" aria-hidden="true"></span>
+            First EMI on statement date
+          </label>
+          <div class="subfield" id="sub-shift">
+            <label for="f-stmtday" class="hint">Statement day of month</label>
+            <div class="input input-sm">
+              <input id="f-stmtday" name="statementDay" inputmode="numeric" />
+            </div>
+            <span class="hint">Interest for the days until the first statement is added to the first bill.</span>
+            <span class="error" data-error-for="statementDay"></span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-row">
+            <label for="f-fee">Processing fee</label>
+            <div class="input input-w">
+              <span class="affix" aria-hidden="true">₹</span>
+              <input id="f-fee" name="processingFee" inputmode="decimal" />
+            </div>
+          </div>
+          <span class="hint">Charged with the first instalment. GST applies if switched on.</span>
+          <span class="error" data-error-for="processingFee"></span>
+        </div>
+      </div>
+    </details>
+
+    <details class="group" id="g-prepay">
+      <summary>
+        <span>Prepayments</span>
+        <span class="sum-meta" id="m-prepay"></span>
+        <Icon name="chevron" class="chev" />
+      </summary>
+      <div class="group-body">
+        <div class="field">
+          <div class="field-row">
+            <label for="f-extra">Extra every month</label>
+            <div class="input input-w">
+              <span class="affix" aria-hidden="true">₹</span>
+              <input id="f-extra" name="extraMonthly" inputmode="decimal" />
+            </div>
+          </div>
+          <span class="error" data-error-for="extraMonthly"></span>
+        </div>
+        <div class="field">
+          <div class="field-row">
+            <label for="f-lump">One-time part-payment</label>
+            <div class="input input-w">
+              <span class="affix" aria-hidden="true">₹</span>
+              <input id="f-lump" name="lumpSum" inputmode="decimal" />
+            </div>
+          </div>
+          <div class="field-row">
+            <label for="f-lumpmonth" class="hint">Paid with instalment no.</label>
+            <div class="input input-sm">
+              <input id="f-lumpmonth" name="lumpSumMonth" inputmode="numeric" />
+            </div>
+          </div>
+          <span class="error" data-error-for="lumpSum"></span>
+          <span class="error" data-error-for="lumpSumMonth"></span>
+        </div>
+        <span class="hint">Prepayments reduce the principal. Your EMI stays the same and the loan ends sooner.</span>
+      </div>
+    </details>
+  </form>
+
+  <aside class="card results" id="results" aria-labelledby="emi-label">
+    <div class="print-only print-head" id="print-head"></div>
+    <p class="invalid-note" id="invalid-note" hidden>Fix the highlighted fields to see your EMI.</p>
+    <div class="results-body">
+      <span class="emi-label" id="emi-label">Monthly EMI</span>
+      <output class="emi-value num" id="emi-value" for="loan-form" aria-live="polite">₹0</output>
+      <p class="emi-sub" id="emi-sub"></p>
+      <p class="callout" id="first-note" hidden></p>
+      <p class="callout good" id="savings" hidden></p>
+
+      <div class="breakdown">
+        <div class="stack" id="stack" role="img" aria-label="Breakdown of total payable">
+          <span data-k="principal" style="background: var(--s-principal)"></span>
+          <span data-k="interest" style="background: var(--s-interest)"></span>
+          <span data-k="gst" style="background: var(--s-gst)"></span>
+        </div>
+        <ul class="legend">
+          <li><i class="key" style="background: var(--s-principal)"></i><span class="label">Principal</span><span class="val" id="v-principal"></span></li>
+          <li>
+            <i class="key" style="background: var(--s-interest)"></i>
+            <span class="label">Interest<small id="v-broken-note" hidden></small></span>
+            <span class="val" id="v-interest"></span>
+          </li>
+          <li id="row-gst">
+            <i class="key" style="background: var(--s-gst)"></i>
+            <span class="label" id="l-gst">GST &amp; fees</span>
+            <span class="val" id="v-gst"></span>
+          </li>
+          <li class="total"><i class="key none"></i><span class="label">Total payable</span><span class="val" id="v-total"></span></li>
+        </ul>
+      </div>
+
+      <dl class="facts">
+        <div class="fact"><dt>Effective rate</dt><dd id="fact-eff"></dd></div>
+        <div class="fact"><dt>Last EMI</dt><dd id="fact-end"></dd></div>
+        <div class="fact"><dt>Interest as % of loan</dt><dd id="fact-ratio"></dd></div>
+        <div class="fact"><dt>Instalments</dt><dd id="fact-months"></dd></div>
+      </dl>
+
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="btn-save"><Icon name="bookmark" /> Save</button>
+        <button type="button" class="btn" id="btn-share"><Icon name="link" /> <span>Share</span></button>
+        <div class="menu-wrap">
+          <button type="button" class="btn" id="btn-export" aria-haspopup="menu" aria-expanded="false" aria-controls="export-menu">
+            <Icon name="download" /> Export
+          </button>
+          <ul class="menu" id="export-menu" role="menu" hidden>
+            <li role="none"><button type="button" role="menuitem" data-export="csv"><Icon name="table" /> Schedule as CSV</button></li>
+            <li role="none"><button type="button" role="menuitem" data-export="image"><Icon name="image" /> Summary image (PNG)</button></li>
+            <li role="none"><button type="button" role="menuitem" data-export="print"><Icon name="printer" /> Print / save as PDF</button></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+</section>
+
+<section class="section" id="schedule-section" aria-labelledby="schedule-title">
+  <div class="card schedule">
+    <div class="section-head">
+      <div>
+        <h2 id="schedule-title">Repayment schedule</h2>
+        <p id="schedule-sub"></p>
+      </div>
+      <div class="seg" role="group" aria-label="Schedule view">
+        <button type="button" data-view="monthly" aria-pressed="true">Monthly</button>
+        <button type="button" data-view="yearly" aria-pressed="false">Yearly</button>
+      </div>
+    </div>
+
+    <figure class="chart" style="margin-inline: 0">
+      <div class="chart-legend" id="chart-legend"></div>
+      <div id="balance-chart"></div>
+      <div class="tooltip" id="chart-tip" hidden></div>
+      <figcaption class="visually-hidden">Outstanding balance over the life of the loan. The full figures are in the table below.</figcaption>
+    </figure>
+
+    <div class="table-wrap" tabindex="0" role="region" aria-labelledby="schedule-title">
+      <table id="schedule-table"></table>
+    </div>
+    <p class="table-meta" id="table-meta"></p>
+  </div>
+</section>
+
+<div class="mobile-bar" id="mobile-bar" aria-hidden="true">
+  <div>
+    <span class="mb-label">Monthly EMI</span>
+    <span class="mb-value" id="mb-value"></span>
+  </div>
+  <a class="btn btn-sm" href="#results" tabindex="-1"><Icon name="arrowUp" size={16} /> Details</a>
+</div>
+
+<dialog id="save-dialog" class="sheet" aria-labelledby="save-title">
+  <form method="dialog" class="dialog-inner" id="save-form">
+    <div class="dialog-head">
+      <h2 id="save-title">Save calculation</h2>
+      <button type="button" class="btn btn-ghost btn-icon" data-close aria-label="Close"><Icon name="close" /></button>
+    </div>
+    <div class="dialog-body">
+      <label for="save-name" class="hint" style="display:block;margin-bottom:8px">Name</label>
+      <input id="save-name" class="text-input" maxlength="80" />
+      <p class="hint" style="margin-top:10px">Saved on this device only (up to 50).</p>
+    </div>
+    <div class="dialog-foot">
+      <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+      <button type="submit" class="btn btn-primary" value="save">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="saved-dialog" class="sheet" aria-labelledby="saved-title">
+  <div class="dialog-inner">
+    <div class="dialog-head">
+      <h2 id="saved-title">Saved calculations</h2>
+      <button type="button" class="btn btn-ghost btn-icon" data-close aria-label="Close"><Icon name="close" /></button>
+    </div>
+    <div class="dialog-body" id="saved-body"></div>
+    <div class="dialog-foot">
+      <button type="button" class="btn btn-sm btn-ghost btn-danger" id="saved-clear">Clear all</button>
+      <span style="flex:1"></span>
+      <label class="btn btn-sm" for="saved-import-file"><Icon name="upload" /> Import</label>
+      <input type="file" id="saved-import-file" accept="application/json,.json" class="visually-hidden" />
+      <button type="button" class="btn btn-sm" id="saved-export" title="Download all saved calculations as a JSON backup"><Icon name="download" /> Export</button>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toast-msg"></span><button type="button" id="toast-action" hidden></button></div>
+
+<script>
+  import { initCalculator } from '../scripts/app';
+  initCalculator();
+</script>
